@@ -1,0 +1,364 @@
+@use '@angular/material' as mat;
+@use 'colors' as colors;
+@use 'typography' as typo;
+
+.block-global {
+    display: flex !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto;
+
+    span.info-input,
+    a.info-input {
+        display: block !important;
+        overflow: hidden;
+        width: 100% !important;
+        min-height: 32px !important;
+        line-height: 32px !important;
+        max-width: 140px !important;
+        white-space: nowrap;
+        text-overflow: ellipsis !important;
+        text-decoration: none !important;
+        text-transform: full-width !important;
+    }
+    span.info-input.link,
+    a.info-input.link {
+        color: #0000ee;
+        max-width: calc(100% - 80px) !important;
+    }
+    span.info-input.list {
+        height: 30px;
+        line-height: 30px;
+    }
+    a.info-input.textarea,
+    span.info-input.textarea {
+        display: flex !important;
+        line-height: 25px !important;
+        text-align: left !important;
+        white-space: normal !important;
+        justify-content: left !important;
+        max-width: calc(100% - 60px) !important;
+    }
+
+    a.info-input.textarea.large,
+    span.info-input.textarea.large {
+        max-width: 210px !important;
+    }
+    // Responsividade (Telas acima de 1920x adquirem esses valores)
+    @media (min-width: 1920px) {
+        a.info-input,
+        span.info-input {
+            max-width: 270px !important;
+        }
+    }
+    .btn.btnEdit-global {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100% !important;
+        width: 100% !important;
+        padding: 0;
+        opacity: 0;
+        filter: alpha(opacity = 0);
+        color: rgba(137, 141, 150, 0.7);
+        transition: 0.2s;
+    }
+    .btn.btnEdit-global:hover .btn-action {
+        color: rgba(137, 141, 150, 1) !important;
+    }
+    .btn.btnEdit-global:hover {
+        opacity: 1;
+        filter: alpha(opacity = 1);
+    }
+    .icon-edit-input {
+        float: right;
+    }
+    .icon-edit-input.icon-edit-global {
+        float: right;
+        color: #7f8592;
+        transform: scale(0.9);
+    }
+    .box-ng-global {
+        display: block !important;
+        width: 100% !important;
+    }
+    .box-ng-global.list {
+        position: absolute;
+        left: 0;
+        top: -1px;
+        z-index: 2 !important;
+    }
+    .form-input-chips {
+        display: block;
+        width: 100%;
+    }
+    .form-input-global {
+        display: flex;
+        width: 100% !important;
+        padding: 0 10px;
+        background-color: #fff;
+        border: 2px solid #8f7ed7;
+        border-radius: 6px;
+    }
+    .form-input-global.select {
+        padding: 0;
+        background: none !important;
+        border: none !important;
+    }
+    .pl-input-global {
+        float: left;
+        width: 100%;
+        height: 100%;
+        min-height: 30px;
+        background: none;
+        border: 0;
+    }
+    .pl-input-global.strong {
+        font-weight: bold;
+    }
+    .pl-input-global.textarea {
+        height: auto;
+        margin: 0.4em 0;
+        line-height: 23px;
+    }
+    .block-bts-global {
+        display: contents;
+    }
+    .block-bts-global button {
+        float: right;
+        padding: 0 !important;
+    }
+    .block-bts-global button.textarea {
+        display: flex !important;
+    }
+    .block-link-base {
+        display: block;
+        flex: 1;
+        min-height: 35px;
+        position: relative;
+        width: 100%;
+    }
+    .block-link-base.textarea {
+        display: table;
+        height: 100% !important;
+    }
+    .block-bts {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        filter: alpha(opacity = 0);
+        transition: 0.2s;
+
+        .block-center {
+            display: table;
+            width: 100%;
+            height: 100% !important;
+        }
+        .box-bt {
+            display: table-cell;
+            width: 100%;
+            height: 100% !important;
+        }
+        .btn {
+            display: flex;
+            float: left;
+            width: 100%;
+            height: 100%;
+            min-height: 34px;
+            padding: 0;
+            align-items: center;
+            justify-content: right;
+            vertical-align: middle;
+            transition: 0.2s;
+            color: rgba(137, 141, 150, 0.7) !important;
+        }
+        .btn:hover {
+            color: rgba(137, 141, 150, 1) !important;
+        }
+        .btn.edit {
+            width: 100% !important;
+            text-align: right;
+        }
+    }
+    .block-bts:hover {
+        opacity: 1;
+        filter: alpha(opacity = 1);
+    }
+    .block-link {
+        display: block;
+        float: left;
+        width: 100% !important;
+        height: auto;
+
+        span {
+            white-space: nowrap;
+            width: 100%;
+            max-width: 850px !important;
+        }
+        @media (min-width: 1920px) {
+            span {
+                max-width: 400px !important;
+            }
+        }
+    }
+    .icon-done,
+    .icon-close,
+    .icon-date {
+        padding-top: 5px !important;
+        font-size: 18px !important;
+    }
+    .icon-date {
+        color: rgba(137, 141, 150, 1) !important;
+    }
+}
+.input-checkbox {
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+    font-size: 20px;
+    border-radius: 4px !important;
+    accent-color: #8f7ed7;
+}
+.block-global .icon-edit-input::ng-deep {
+    margin-top: -2px !important;
+}
+
+.chips_lead_ttr {
+    border: 0 solid red;
+
+    .mat-standard-chip {
+        min-height: 24px;
+        cursor: pointer;
+    }
+    .mat-standard-chip:active {
+        background: #e5dff9;
+    }
+    mat-chip-list {
+        display: block;
+        width: 100%;
+
+        mat-chip {
+            width: auto !important;
+            line-height: 14px;
+            overflow: hidden;
+            box-sizing: border-box;
+            background: none;
+            border-radius: 10px;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 12px;
+            text-align: center;
+            color: #57479c;
+            outline: none;
+            border: 1px solid #d3c7ff;
+        }
+    }
+    .selected {
+        background: #f2f2fa !important;
+    }
+}
+.chips_lead_ttr::ng-deep {
+    .mat-chip-list-wrapper {
+        width: 100%;
+    }
+    .mat-chip.mat-standard-chip::after {
+        background: #f2f2fa;
+    }
+    .mat-standard-chip:hover {
+        background: #f2f2fa !important;
+    }
+    .mat-chip.mat-standard-chip:not(.mat-chip-disabled):active {
+        box-shadow: none;
+    }
+}
+
+// New adjustment to edit-in-place component (type: text)
+
+.block-component {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+
+    .block-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: auto;
+
+        .block-value {
+            width: auto;
+            height: auto;
+            flex: 1;
+        }
+        .block-action {
+            width: auto;
+            height: auto;
+            opacity: 0;
+            transition: 0.3s;
+        }
+    }
+    .block-info:hover .block-action {
+        opacity: 1;
+    }
+    .block-edit {
+        width: 100%;
+        height: auto;
+        display: block;
+
+        .block-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: auto;
+            padding: 0;
+            background-color: mat.get-color-from-palette(
+                colors.$palette-mb-background,
+                400
+            );
+            border: 2px solid
+                mat.get-color-from-palette(colors.$palette-mb-secondary, 100);
+            border-radius: 6px;
+
+            .input {
+                width: auto;
+                min-height: 30px;
+                background: none;
+                padding: 0 5px;
+                flex: 1;
+                border: 0;
+            }
+            .block-bts {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+                width: auto;
+                height: auto;
+
+                mb-button {
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+    .block-select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: auto;
+        padding: 0;
+
+        .select {
+            width: 100%;
+            border: 0;
+            background: none;
+            font-weight: bold;
+        }
+    }
+}
