@@ -1,0 +1,670 @@
+<!--
+    TODO refactor component, too many copy-paste detected by JSCPD
+
+    https://github.com/MonteBravo/mb-frontend-crm/issues/1225
+-->
+
+<!-- LIST -->
+<div *ngIf="type === 'list'" class="block-list">
+    <div *ngFor="let item of arrayField; let i = index" class="block-list-int">
+        <span *ngIf="inEditArray !== i">{{ item }}</span>
+        <button
+            *ngIf="inEditArray !== i"
+            class="btn btnEdit"
+            (click)="editArray(i)"
+        >
+            <mat-icon class="btn-action icon-edit">create</mat-icon>
+        </button>
+        <div *ngIf="inEditArray === i" class="block-input">
+            <ng-container
+                *ngTemplateOutlet="
+                    typeList;
+                    context: { label: 'Lead', value: 'value' }
+                "
+            ></ng-container>
+        </div>
+    </div>
+    <div class="block-list-email">
+        <div *ngIf="formIsOpen" class="block-input">
+            <ng-container
+                *ngTemplateOutlet="
+                    typeList;
+                    context: { label: 'Lead', value: 'value' }
+                "
+            ></ng-container>
+        </div>
+        <button
+            *ngIf="!formIsOpen || inEditArray > -1"
+            (click)="openForm()"
+            type="button"
+            class="btn btnAdd action-button"
+        >
+            Adicionar
+        </button>
+    </div>
+</div>
+<ng-template #typeList let-label="label" let-value="value">
+    <form class="form-input camp" [formGroup]="form" (ngSubmit)="submitArray()">
+        <input
+            onclick="this.select();"
+            autofocus
+            class="pl-input"
+            formControlName="field"
+            type="text"
+        />
+        <button type="submit" class="btn btnDone action-button">
+            <mat-icon class="btn-action text-success icon-done">done</mat-icon>
+        </button>
+        <button class="btn btnClose action-button">
+            <mat-icon
+                class="btn-action text-danger icon-close"
+                (click)="cancelArray()"
+            >
+                close
+            </mat-icon>
+        </button>
+    </form>
+</ng-template>
+<!-- NUMBER -->
+<div *ngIf="type === 'number'" class="block-global">
+    <div class="block-link-base">
+        <div class="block-link">
+            <span *ngIf="!inEdit" class="info-input list">
+                {{ field ? field : '-' }}
+                <span *ngIf="!inEdit && posFix">{{ posFix }}</span>
+            </span>
+        </div>
+        <div class="block-bts">
+            <div class="box-bt" *ngIf="!inEdit">
+                <!--? add link here! -->
+                <!--? <button class="btn"></button> -->
+            </div>
+            <div class="box-bt" *ngIf="!inEdit">
+                <button *ngIf="!inEdit" class="btn" (click)="edit()">
+                    <mat-icon class="btn-action icon-edit-input">
+                        create
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="inEdit" class="box-ng-global list">
+            <ng-container
+                *ngTemplateOutlet="
+                    typeNumber;
+                    context: { label: 'Lead', value: 'value' }
+                "
+            ></ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #typeNumber let-label="label" let-value="value">
+    <form class="form-input-global" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="block-bts-global">
+            <input
+                onclick="this.select()"
+                autofocus
+                class="pl-input-global"
+                formControlName="field"
+                type="number"
+                min="1"
+                max="120"
+            />
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button type="submit" class="btn action-button">
+                <mat-icon class="btn-action text-success icon-done">
+                    done
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!-- TEXT -->
+<div *ngIf="type === 'text'" class="block-component">
+    <div class="block-info" *ngIf="!inEdit">
+        <div class="block-value">
+            {{ field ? field : '-' }}
+            <small *ngIf="!inEdit && posFix">&nbsp; {{ posFix }}</small>
+        </div>
+        <div class="block-action">
+            <mb-button
+                variant="icon"
+                size="sm"
+                color="accent"
+                icon="edit"
+                onlyIcon="true"
+                (click)="edit()"
+            >
+                edit
+            </mb-button>
+        </div>
+    </div>
+    <div *ngIf="inEdit" class="block-edit">
+        <ng-container *ngTemplateOutlet="typeText"></ng-container>
+    </div>
+</div>
+<ng-template #typeText>
+    <form class="block-input" [formGroup]="form" (ngSubmit)="submit()">
+        <input
+            onclick="this.select();"
+            autofocus
+            class="input"
+            formControlName="field"
+            type="text"
+        />
+        <div class="block-bts">
+            <mb-button
+                variant="icon"
+                size="sm"
+                color="warn"
+                icon="close"
+                onlyIcon="true"
+                (click)="cancel()"
+            >
+                close
+            </mb-button>
+
+            <mb-button
+                type="submit"
+                variant="icon"
+                size="sm"
+                color="accent"
+                icon="check"
+                onlyIcon="true"
+            >
+                done
+            </mb-button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- SELECT -->
+<div *ngIf="type === 'select'" class="block-component">
+    <ng-container *ngTemplateOutlet="typeSelect"></ng-container>
+</div>
+<ng-template #typeSelect>
+    <form class="block-select" [formGroup]="form" (ngSubmit)="submit()">
+        <select class="select" formControlName="field" (change)="submit()">
+            <option
+                *ngFor="let item of options"
+                [ngValue]="item.key"
+                [disabled]="item.disabled"
+            >
+                {{ item.value }}
+            </option>
+        </select>
+    </form>
+</ng-template>
+<!-- TEXT LINK -->
+<div
+    *ngIf="type === 'textLink'"
+    class="block-global"
+    [ngClass]="[fieldName === 'email' ? 'emailActions' : '']"
+>
+    <div class="block-link-base">
+        <div class="block-link">
+            <span
+                *ngIf="!inEdit"
+                [ngClass]="[
+                    fieldName === 'usefulLinks' || fieldName === 'email'
+                        ? 'info-input link'
+                        : 'info-input list'
+                ]"
+            >
+                {{ field }}
+                <span *ngIf="!inEdit && posFix">&nbsp; {{ posFix }}</span>
+            </span>
+        </div>
+
+        <div class="block-bts">
+            <div class="box-bt" *ngIf="!inEdit">
+                <a
+                    href="mailto:{{ field }}?subject={{ field }}"
+                    [ngClass]="[
+                        fieldName === 'email'
+                            ? 'info-input link'
+                            : 'info-input list'
+                    ]"
+                    *ngIf="!inEdit && fieldName === 'email'"
+                ></a>
+            </div>
+            <div class="box-bt" *ngIf="!inEdit">
+                <button class="btn" (click)="edit()">
+                    <mat-icon class="btn-action">create</mat-icon>
+                </button>
+            </div>
+            <div class="box-bt" *ngIf="!inEdit && fieldName !== 'email'">
+                <button class="btn" (click)="patchEmail('delete')">
+                    <mat-icon class="btn-action">delete</mat-icon>
+                </button>
+            </div>
+            <div class="box-bt" *ngIf="!inEdit && fieldName !== 'email'">
+                <button class="btn" (click)="copy()">
+                    <mat-icon class="btn-action">content_copy</mat-icon>
+                </button>
+            </div>
+            <div
+                class="box-bt"
+                *ngIf="
+                    !inEdit &&
+                    fieldName === 'email' &&
+                    allowDeleteEmail === true
+                "
+            >
+                <button class="btn" (click)="patchEmail('delete')">
+                    <mat-icon class="btn-action">close</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="inEdit" class="box-ng-global list">
+            <ng-container *ngTemplateOutlet="typeTextLink"></ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #typeTextLink>
+    <form
+        class="form-input-global"
+        [formGroup]="form"
+        (ngSubmit)="fieldName === 'email' ? patchEmail('update') : submit()"
+    >
+        <div class="block-bts-global">
+            <input
+                onclick="this.select();"
+                autofocus
+                class="pl-input-global"
+                formControlName="field"
+                type="text"
+            />
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button type="submit" class="btn action-button">
+                <mat-icon class="btn-action text-success icon-done">
+                    done
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!-- TEXT LIST  -->
+<div
+    *ngIf="type === 'textList'"
+    class="block-global"
+    [ngClass]="[fieldName === 'email' ? 'emailActions' : '']"
+>
+    <div class="block-link-base textarea">
+        <div class="block-link">
+            <span *ngIf="!inEdit" class="info-input textarea large">
+                {{ field }}
+                <span *ngIf="!inEdit && posFix">&nbsp; {{ posFix }}</span>
+            </span>
+        </div>
+        <div class="block-bts">
+            <div class="block-center">
+                <div class="box-bt" *ngIf="!inEdit">
+                    <!--? add link here! -->
+                    <!--? <button class="btn"></button> -->
+                </div>
+                <div class="box-bt" *ngIf="!inEdit">
+                    <button class="btn" (click)="edit()">
+                        <mat-icon class="btn-action">create</mat-icon>
+                    </button>
+                </div>
+                <div class="box-bt" *ngIf="!inEdit && fieldName !== 'email'">
+                    <button class="btn" (click)="patchEmail('delete')">
+                        <mat-icon class="btn-action">delete</mat-icon>
+                    </button>
+                </div>
+                <div class="box-bt" *ngIf="!inEdit && fieldName !== 'email'">
+                    <button class="btn" (click)="copy()">
+                        <mat-icon class="btn-action">content_copy</mat-icon>
+                    </button>
+                </div>
+                <div
+                    class="box-bt"
+                    *ngIf="
+                        !inEdit &&
+                        fieldName === 'email' &&
+                        allowDeleteEmail === true
+                    "
+                >
+                    <button class="btn" (click)="patchEmail('delete')">
+                        <mat-icon class="btn-action">close</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="inEdit" class="box-ng-global list">
+            <ng-container *ngTemplateOutlet="typeShareX"></ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #typeShareX>
+    <form
+        class="form-input-global"
+        [formGroup]="form"
+        (ngSubmit)="fieldName === 'email' ? patchEmail('update') : submit()"
+    >
+        <div class="block-bts-global">
+            <input
+                onclick="this.select();"
+                autofocus
+                class="pl-input-global"
+                formControlName="field"
+                type="text"
+            />
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button type="submit" class="btn action-button">
+                <mat-icon class="btn-action text-success icon-done">
+                    done
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!-- DATE -->
+<div *ngIf="type === 'date'" class="block-global">
+    <div class="block-link-base">
+        <div class="block-link">
+            <span *ngIf="!inEdit" class="info-input list">
+                {{ field | date: 'dd/MM/yyyy' }}
+                <span *ngIf="!inEdit && posFix">&nbsp; {{ posFix }}</span>
+            </span>
+        </div>
+        <div class="block-bts">
+            <div class="box-bt" *ngIf="!inEdit">
+                <!--? add link here! -->
+                <!--? <button class="btn"></button> -->
+            </div>
+            <div class="box-bt" *ngIf="!inEdit">
+                <button *ngIf="!inEdit" class="btn" (click)="edit()">
+                    <mat-icon class="btn-action icon-edit-input">
+                        calendar_today
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="inEdit" class="box-ng-global list">
+            <ng-container *ngTemplateOutlet="typeDate"></ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #typeDate>
+    <form class="form-input-global" [formGroup]="form">
+        <div class="block-bts-global">
+            <input
+                [mbMask]="null"
+                class="pl-input-global"
+                autofocus
+                matInput
+                formControlName="field"
+                (click)="picker.open()"
+                [matDatepicker]="$any(picker)"
+                (dateChange)="submitDate()"
+                required
+            />
+        </div>
+        <mat-datepicker #picker></mat-datepicker>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon class="btn-action icon-date" (click)="picker.open()">
+                    calendar_today
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!-- CURRENCY -->
+<div *ngIf="type === 'currency'" class="block-global">
+    <div class="block-link-base">
+        <div class="block-link">
+            <span *ngIf="!inEdit" class="info-input list">
+                <span *ngIf="!inEdit && field !== null">
+                    R$ {{ field | mask: 'separator':'.' }}
+                </span>
+                <span *ngIf="!inEdit && field === null">-</span>
+                <span *ngIf="!inEdit && posFix">&nbsp; {{ posFix }}</span>
+            </span>
+        </div>
+        <div class="block-bts">
+            <div class="box-bt" *ngIf="!inEdit">
+                <!--? add link here! -->
+                <!--? <button class="btn"></button> -->
+            </div>
+            <div class="box-bt" *ngIf="!inEdit">
+                <button *ngIf="!inEdit" class="btn" (click)="edit()">
+                    <mat-icon class="btn-action icon-edit-input">
+                        create
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="inEdit" class="box-ng-global list">
+            <ng-container *ngTemplateOutlet="typeCurrency"></ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #typeCurrency>
+    <form class="form-input-global" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="block-bts-global">
+            <input
+                onclick="this.select();"
+                autofocus
+                class="pl-input-global"
+                mb-mask="currency"
+                formControlName="field"
+                type="text"
+            />
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button type="submit" class="btn action-button">
+                <mat-icon class="btn-action text-success icon-done">
+                    done
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!-- CHECKBOX -->
+<div *ngIf="type === 'checkbox'" class="box-ng-global">
+    <div class="box-ng-global">
+        <ng-container *ngTemplateOutlet="typeCheckbox"></ng-container>
+    </div>
+</div>
+<ng-template #typeCheckbox>
+    <form class="form-input-global" [formGroup]="form" (ngSubmit)="submit()">
+        <input
+            formControlName="field"
+            (change)="submit()"
+            class="input-checkbox"
+            type="checkbox"
+        />
+    </form>
+</ng-template>
+
+<div *ngIf="type === 'chips'" class="block-global chips_lead_ttr">
+    <div class="box-ng-global">
+        <ng-container *ngTemplateOutlet="typeChips"></ng-container>
+    </div>
+</div>
+<ng-template #typeChips>
+    <form class="form-input-chips" [formGroup]="form" (ngSubmit)="submit()">
+        <mat-chip-list>
+            <mat-chip
+                *ngFor="let option of options"
+                [ngClass]="field === option.key ? 'selected' : ''"
+                (click)="submitChip(option.key)"
+            >
+                {{ option.value }}
+            </mat-chip>
+        </mat-chip-list>
+    </form>
+</ng-template>
+<!-- ADD NEW ITEM -->
+<div *ngIf="type === 'addNewItem'" class="block-global">
+    <div class="block-link-base">
+        <div class="box-ng-global">
+            <ng-container *ngTemplateOutlet="typeAddNewItem"></ng-container>
+        </div>
+    </div>
+</div>
+<ng-template #typeAddNewItem>
+    <form
+        class="form-input-global"
+        [formGroup]="form"
+        (ngSubmit)="fieldName === 'email' ? patchEmail('add') : submit()"
+    >
+        <div class="block-bts-global">
+            <input
+                onclick="this.select();"
+                autofocus
+                class="pl-input-global"
+                formControlName="field"
+                type="text"
+            />
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button type="submit" class="btn action-button">
+                <mat-icon class="btn-action text-success icon-done">
+                    done
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!-- TEXTAREA -->
+<div *ngIf="type === 'textarea'" class="block-global">
+    <div class="block-link-base textarea">
+        <div class="block-link textarea">
+            <div
+                *ngIf="!inEdit"
+                [ngStyle]="{ width: '100%' }"
+                class="block-link"
+            >
+                <a
+                    *ngIf="!inEdit && field !== null"
+                    class="info-input textarea"
+                >
+                    {{ field }}
+                </a>
+                <a
+                    *ngIf="!inEdit && field === null"
+                    class="info-input textarea"
+                >
+                    -
+                </a>
+                <span *ngIf="!inEdit && posFix" class="info-input textarea">
+                    &nbsp; {{ posFix }}
+                </span>
+            </div>
+        </div>
+        <div class="block-bts">
+            <div class="box-bt" *ngIf="!inEdit">
+                <!--? add link here! -->
+                <!--? <button class="btn"></button> -->
+            </div>
+            <div class="box-bt" *ngIf="!inEdit">
+                <button *ngIf="!inEdit" class="btn" (click)="edit()">
+                    <mat-icon class="btn-action icon-edit-input">
+                        create
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="inEdit" [ngStyle]="{ width: '100%' }" class="box-ng-global">
+        <ng-container *ngTemplateOutlet="typeTextarea"></ng-container>
+    </div>
+</div>
+<ng-template #typeTextarea>
+    <form class="form-input-global" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="block-bts-global">
+            <textarea
+                onclick="this.select();"
+                autofocus
+                class="pl-input-global textarea"
+                formControlName="field"
+                type="text"
+                rows="2"
+            ></textarea>
+        </div>
+        <div class="block-bts-global">
+            <button class="btn action-button textarea">
+                <mat-icon
+                    class="btn-action text-danger icon-close"
+                    (click)="cancel()"
+                >
+                    close
+                </mat-icon>
+            </button>
+        </div>
+        <div class="block-bts-global">
+            <button type="submit" class="btn action-button textarea">
+                <mat-icon class="btn-action text-success icon-done">
+                    done
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</ng-template>
