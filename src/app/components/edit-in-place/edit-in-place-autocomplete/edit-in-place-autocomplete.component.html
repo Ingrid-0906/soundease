@@ -1,0 +1,53 @@
+<div
+    (mouseenter)="setEditButton(true)"
+    (mouseleave)="setEditButton(false)"
+    [ngStyle]="inputStyle"
+    *ngIf="!inEdit"
+>
+    <p>
+        {{
+            model
+                ? control.value
+                    ? fieldName && control.value[fieldName]
+                        ? control.value[fieldName]
+                        : control.value
+                    : '-'
+                : '-'
+        }}
+    </p>
+</div>
+
+<form (ngSubmit)="submit()" *ngIf="inEdit">
+    <input
+        autofocus
+        onfocus="this.select()"
+        [ngStyle]="inputStyle"
+        type="text"
+        [placeholder]="placeholder"
+        [formControl]="control"
+        [matAutocomplete]="auto"
+    />
+    <mat-autocomplete
+        autoActiveFirstOption
+        #auto="matAutocomplete"
+        (optionSelected)="selected()"
+        [displayWith]="displayFn || undefined"
+    >
+        <mat-option *ngFor="let option of filtered | async" [value]="option">
+            {{ option[fieldName] }}
+        </mat-option>
+    </mat-autocomplete>
+</form>
+
+<mb-icon
+    (mouseover)="setEditButton(true)"
+    (mouseleave)="setEditButton(false)"
+    [hidden]="!showEditButton"
+    style="position: absolute; right: 0.5rem; top: 0.25rem; cursor: pointer"
+    *ngIf="!inEdit"
+    icon="edit"
+    size="md"
+    svgColor="#898D96"
+    color="primary"
+    (click)="toggleEdit()"
+></mb-icon>
